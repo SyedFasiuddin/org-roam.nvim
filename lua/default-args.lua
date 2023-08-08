@@ -1,6 +1,4 @@
 return {
     org_roam_directory = "",
-    -- org_roam_capture = "",
-    -- org_roam_node_find = "",
-    -- org_roam_node_insert = "",
+    org_roam_database_file = vim.fn.stdpath("data") .. "/org-roam.db",
 }
