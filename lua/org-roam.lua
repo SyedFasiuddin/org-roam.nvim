@@ -37,6 +37,7 @@ local function org_roam_node_find()
                     return {
                         value   = entry,
                         display = entry.title,
+                        ordinal = entry.title
                     }
                 end
             },
