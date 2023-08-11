@@ -1,3 +1,11 @@
+local sqlite = require("sqlite.db")
+
+local pickers = require("telescope.pickers")
+local finders = require("telescope.finders")
+local conf = require("telescope.config").values
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
+
 local default_args = require("default-args")
 local user_config = {}
 
@@ -9,7 +17,6 @@ local function setup(args)
 end
 
 local function org_roam_node_find()
-    local sqlite = require("sqlite.db")
 
     local db = sqlite.new(user_config.org_roam_database_file)
     local nodes = {}
@@ -17,11 +24,6 @@ local function org_roam_node_find()
         nodes = database:select("files", { keys = { "file", "title" } })
     end)
 
-    local pickers = require("telescope.pickers")
-    local finders = require("telescope.finders")
-    local conf = require("telescope.config").values
-    local actions = require("telescope.actions")
-    local action_state = require("telescope.actions.state")
 
     local telescope_picker = function(opts)
         opts = opts or {}
