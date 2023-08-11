@@ -18,18 +18,18 @@ end
 
 local function org_roam_node_find()
     local nodes = sqlite.with_open(user_config.org_roam_database_file, function (db)
-        local x = db:eval([[SELECT file, title FROM nodes;]])
-        local y = db:eval([[
-            SELECT aliases.alias AS title, nodes.file
+        local nodes = db:eval([[SELECT file, title, pos FROM nodes;]])
+        local node_aliases = db:eval([[
+            SELECT aliases.alias AS title, nodes.file, nodes.pos
               FROM aliases, nodes
              WHERE aliases.node_id = nodes.id;
           ]])
 
-        for _, val in ipairs(y) do
-            table.insert(x, val)
+        for _, val in ipairs(node_aliases) do
+            table.insert(nodes, val)
         end
 
-        return x
+        return nodes
     end)
 
     local telescope_picker = function(opts)
@@ -55,14 +55,31 @@ local function org_roam_node_find()
                 actions.select_default:replace(function()
                     actions.close(prompt_bufnr)
                     local selection = action_state.get_selected_entry()
-                    vim.cmd.edit(selection.value.file)
+                    if selection == nil then
+                        local title = action_state.get_current_line()
+                        -- TODO:
+                        -- Create a new node with this title
+                    else
+                        local file = selection.value.file
+                        local pos = selection.value.pos
+                        local row = 0;
+
+                        for line in io.lines(file) do
+                            if (pos < line:len()) then break else
+                                pos = pos - line:len()
+                            end
+                            row = row + 1
+                        end
+
+                        vim.cmd.edit(selection.value.file)
+                        vim.api.nvim_win_set_cursor(0, { row, 0 })
+                    end
                 end)
                 return true
             end,
             sorter = conf.generic_sorter(opts),
         }):find()
     end
-
     telescope_picker()
 end
 
