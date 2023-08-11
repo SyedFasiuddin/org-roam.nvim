@@ -17,13 +17,20 @@ local function setup(args)
 end
 
 local function org_roam_node_find()
+    local nodes = sqlite.with_open(user_config.org_roam_database_file, function (db)
+        local x = db:eval([[SELECT file, title FROM nodes;]])
+        local y = db:eval([[
+            SELECT aliases.alias AS title, nodes.file
+              FROM aliases, nodes
+             WHERE aliases.node_id = nodes.id;
+          ]])
 
-    local db = sqlite.new(user_config.org_roam_database_file)
-    local nodes = {}
-    db:with_open(function (database)
-        nodes = database:select("files", { keys = { "file", "title" } })
+        for _, val in ipairs(y) do
+            table.insert(x, val)
+        end
+
+        return x
     end)
-
 
     local telescope_picker = function(opts)
         opts = opts or {}
