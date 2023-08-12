@@ -16,6 +16,41 @@ local function setup(args)
     end
 end
 
+local function org_roam_capture(title)
+    if title == nil then
+        title = vim.fn.input("Enter the title: ")
+    end
+    local filename = os.date("%Y%m%d%H%M%S") .. "_" .. title:gsub("%A", "_")
+    if filename:len() > 251 then
+        filename = filename:sub(1, 251) .. ".org"
+    else
+        filename = filename .. ".org"
+    end
+
+    -- Credits: https://github.com/TrevorS/uuid-nvim
+    math.randomseed(os.time())
+    local uuid = string.gsub("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx",
+    "[xy]", function(c)
+        local r = math.random()
+        local v = c == "x" and math.floor(r * 0x10) or (math.floor(r * 0x4) + 8)
+        return string.format("%x", v)
+    end):upper()
+
+    local node_head = ":PROPERTIES:\n:ID:        " .. uuid ..
+                      "\n:END:\n#+title: " .. title .. "\n"
+
+    local file_path = user_config.org_roam_directory .. filename
+    local fp, err = io.open(file_path, "w")
+    if fp == nil then
+        print("Error: " .. err)
+    else
+        fp:write(node_head)
+        fp:close()
+
+        vim.cmd.edit(file_path)
+    end
+end
+
 local function org_roam_node_find()
     local nodes = sqlite.with_open(user_config.org_roam_database_file, function (db)
         local nodes = db:eval([[SELECT file, title, pos FROM nodes;]])
@@ -57,6 +92,7 @@ local function org_roam_node_find()
                     local selection = action_state.get_selected_entry()
                     if selection == nil then
                         local title = action_state.get_current_line()
+                        org_roam_capture(title)
                         -- TODO:
                         -- Create a new node with this title
                     else
@@ -85,5 +121,6 @@ end
 
 return {
     setup = setup,
-    org_roam_node_find = org_roam_node_find
+    org_roam_capture = org_roam_capture,
+    org_roam_node_find = org_roam_node_find,
 }
