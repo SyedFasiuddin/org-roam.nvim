@@ -1,4 +1,8 @@
 * =org-roam.nvim=
+  #+BEGIN_QUOTE
+    Under development, no way near usable
+  #+END_QUOTE
+
   This plugin tries to have one to one feature parity with the original [[https://github.com/org-roam/org-roam][org-roam]]
 
   If you are new to this checkout the org-roam [[https://www.orgroam.com/manual.html][manual]]
@@ -13,7 +17,7 @@
                  -- required
                  org_roam_directory = "~/OrgRoam",
 
-                 -- required (not checked if preset)
+                 -- required (not checked if present)
                  org_roam_database_file = "~/.config/emacs/org-roam.db"
              })
              vim.keymap.set("n", "<space>nf",  org_roam.org_roam_node_find)
