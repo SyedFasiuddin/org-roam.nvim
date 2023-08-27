@@ -20,11 +20,38 @@
                  -- required (not checked if present)
                  org_roam_database_file = "~/.config/emacs/org-roam.db"
              })
-             vim.keymap.set("n", "<space>nf",  org_roam.org_roam_node_find)
+
+             vim.keymap.set("n", "<Leader>nf", org_roam.org_roam_node_find)
+             vim.keymap.set("n", "<Leader>nc", org_roam.org_roam_capture)
          end,
          requires = { "kkharji/sqlite.lua" }
      })
    #+END_SRC
 
+* Installation with lazy.nvim
+  #+BEGIN_SRC lua
+    {
+        "SyedFasiuddin/org-roam.nvim",
+        dependencies = { "kkharji/sqlite.lua" },
+        opts = {
+            -- required
+            org_roam_directory = "~/OrgRoam",
+            -- required (not checked if present)
+            org_roam_database_file = "~/.config/emacs/org-roam.db"
+        },
+        keys = {
+            {
+                "<Leader>nf",
+                "<Cmd>lua require(\"org-roam\").org_roam_node_find()<CR>",
+            },
+            {
+                "<Leader>nc",
+                "<Cmd>lua require(\"org-roam\").org_roam_capture()<CR>",
+            },
+        },
+    }
+  #+END_SRC
+
 ** What features are supported?
    - Find node: =org_roam_node_find=
+   - Capture node: =org_roam_capture=
