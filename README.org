@@ -1,6 +1,7 @@
 * =org-roam.nvim=
   #+BEGIN_QUOTE
-    Under development, no way near usable
+    This project is no longer maintained. Why? Read
+  [[https://github.com/nvim-orgmode/orgmode/issues/66#issuecomment-1702631466][this]]
   #+END_QUOTE
 
   This plugin tries to have one to one feature parity with the original [[https://github.com/org-roam/org-roam][org-roam]]
